@@ -5,10 +5,10 @@
       "title": "Weekend Countdown",
       "description": "A simple countdown showing how much time is left until the next weekend. Perfect for surviving the work week!",
       "icon": "⏰",
-      "technologies": ["HTML", "CSS", "JavaScript"],
+      "technologies": ["Vue", "Frontend", "Boring"],
       "links": {
         "live": "https://www.countdown-weekend.info/",
-        "github": "#"
+        "github": "https://github.com/valentinomettifogo/countdown-weekend"
       }
     },
     {
