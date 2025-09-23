@@ -1,0 +1,70 @@
+{
+  "projects": [
+    {
+      "id": "weekend-countdown",
+      "title": "Weekend Countdown",
+      "description": "A simple countdown showing how much time is left until the next weekend. Perfect for surviving the work week!",
+      "icon": "⏰",
+      "technologies": ["HTML", "CSS", "JavaScript"],
+      "links": {
+        "live": "https://www.countdown-weekend.info/",
+        "github": "#"
+      }
+    },
+    {
+      "id": "task-manager",
+      "title": "Task Manager",
+      "description": "App for managing daily tasks with a clean interface and drag & drop functionality to organize priorities.",
+      "icon": "📝",
+      "technologies": ["React", "LocalStorage", "CSS Grid"],
+      "links": {
+        "demo": "#",
+        "github": "#"
+      }
+    },
+    {
+      "id": "weather-app",
+      "title": "Weather App",
+      "description": "Minimal weather application showing accurate forecasts with clean, responsive design for all devices.",
+      "icon": "🌤️",
+      "technologies": ["Vue.js", "OpenWeather API", "SCSS"],
+      "links": {
+        "demo": "#",
+        "github": "#"
+      }
+    },
+    {
+      "id": "budget-tracker",
+      "title": "Budget Tracker",
+      "description": "Tool for tracking monthly expenses with simple charts and customizable categories.",
+      "icon": "💰",
+      "technologies": ["JavaScript", "Chart.js", "IndexedDB"],
+      "links": {
+        "demo": "#",
+        "github": "#"
+      }
+    },
+    {
+      "id": "link-shortener",
+      "title": "Link Shortener",
+      "description": "Service for shortening long URLs with usage statistics and user-friendly interface.",
+      "icon": "🔗",
+      "technologies": ["Node.js", "Express", "MongoDB"],
+      "links": {
+        "demo": "#",
+        "docs": "#"
+      }
+    },
+    {
+      "id": "music-player",
+      "title": "Music Player",
+      "description": "Web audio player with custom playlists, waveform visualizer and touch-friendly controls.",
+      "icon": "🎵",
+      "technologies": ["Web Audio API", "Canvas", "PWA"],
+      "links": {
+        "demo": "#",
+        "github": "#"
+      }
+    }
+  ]
+}
