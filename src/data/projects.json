@@ -5,9 +5,10 @@
       "title": "Weekend Countdown",
       "description": "A simple countdown showing how much time is left until the next weekend. Perfect for surviving the work week!",
       "icon": "⏰",
+      "date": "2025-09-01",
       "technologies": ["Vue", "Frontend", "Boring"],
       "links": {
-        "live": "https://www.countdown-weekend.info/",
+        "url": "https://www.countdown-weekend.info/",
         "github": "https://github.com/valentinomettifogo/countdown-weekend"
       }
     },
@@ -16,9 +17,10 @@
       "title": "Task Manager",
       "description": "App for managing daily tasks with a clean interface and drag & drop functionality to organize priorities.",
       "icon": "📝",
+      "date": "2025-08-15",
       "technologies": ["React", "LocalStorage", "CSS Grid"],
       "links": {
-        "demo": "#",
+        "url": "#",
         "github": "#"
       }
     },
@@ -27,9 +29,10 @@
       "title": "Weather App",
       "description": "Minimal weather application showing accurate forecasts with clean, responsive design for all devices.",
       "icon": "🌤️",
+      "date": "2025-07-10",
       "technologies": ["Vue.js", "OpenWeather API", "SCSS"],
       "links": {
-        "demo": "#",
+        "url": "#",
         "github": "#"
       }
     },
@@ -38,9 +41,10 @@
       "title": "Budget Tracker",
       "description": "Tool for tracking monthly expenses with simple charts and customizable categories.",
       "icon": "💰",
+      "date": "2025-06-20",
       "technologies": ["JavaScript", "Chart.js", "IndexedDB"],
       "links": {
-        "demo": "#",
+        "url": "#",
         "github": "#"
       }
     },
@@ -49,9 +53,10 @@
       "title": "Link Shortener",
       "description": "Service for shortening long URLs with usage statistics and user-friendly interface.",
       "icon": "🔗",
+      "date": "2025-05-05",
       "technologies": ["Node.js", "Express", "MongoDB"],
       "links": {
-        "demo": "#",
+        "url": "#",
         "docs": "#"
       }
     },
@@ -60,9 +65,10 @@
       "title": "Music Player",
       "description": "Web audio player with custom playlists, waveform visualizer and touch-friendly controls.",
       "icon": "🎵",
+      "date": "2025-04-01",
       "technologies": ["Web Audio API", "Canvas", "PWA"],
       "links": {
-        "demo": "#",
+        "url": "#",
         "github": "#"
       }
     }

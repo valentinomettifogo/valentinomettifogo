@@ -1,96 +1,89 @@
 <template>
-  <div>
-    <header>
-      <Navbar />
-    </header>
-    
-    <HeroSection />
-    
-    <section class="projects" id="projects">
-      <h2 class="section-title">Projects</h2>
-      <div class="projects-grid">
-        <ProjectCard 
-          v-for="project in projects" 
-          :key="project.id" 
-          :project="project" 
-        />
+  <div class="container">
+    <Sidebar />
+    <main class="main-content">
+      <header>
+        <h1>I Miei Progetti</h1>
+        <p class="subtitle">Portfolio & Blog Creativo</p>
+      </header>
+      <div class="posts-container">
+        <Post v-for="project in projects" :key="project.id" :project="project" />
       </div>
-    </section>
-    
-    <ContactSection />
-    
-    <Footer />
+    </main>
   </div>
 </template>
-  
+
 <script setup>
-import { ref, onMounted } from 'vue'
-import Navbar from './components/Navbar.vue'
-import HeroSection from './components/HeroSection.vue'
-import ProjectCard from './components/ProjectCard.vue'
-import ContactSection from './components/ContactSection.vue'
-import Footer from './components/Footer.vue'
-import projectsData from './data/projects.json'
+import { ref, onMounted } from 'vue';
+import Sidebar from './components/Sidebar.vue';
+import Post from './components/Post.vue';
 
-const projects = ref([])
+const projects = ref([]);
 
-onMounted(() => {
-  // Load projects data
-  projects.value = projectsData.projects
-  
-  // Smooth scrolling
-  document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-    anchor.addEventListener('click', function (e) {
-      e.preventDefault();
-      const target = document.querySelector(this.getAttribute('href'));
-      if (target) {
-        const headerHeight = 80;
-        const targetPosition = target.offsetTop - headerHeight;
-        
-        window.scrollTo({
-          top: targetPosition,
-          behavior: 'smooth'
-        });
-      }
-    });
-  });
-  
-  // Header background on scroll
-  const header = document.querySelector('header');
-  
-  window.addEventListener('scroll', () => {
-    if (window.scrollY > 50) {
-      header.style.background = 'rgba(250, 250, 250, 0.98)';
-      header.style.borderBottomColor = '#ddd';
-    } else {
-      header.style.background = 'rgba(250, 250, 250, 0.95)';
-      header.style.borderBottomColor = '#eee';
-    }
-  });
+onMounted(async () => {
+  const res = await fetch('src/data/projects.json');
+  const data = await res.json();
+  projects.value = data.projects;
 });
 </script>
 
-<style scoped>
-.projects {
-  padding: 80px 40px;
+<style lang="scss">
+@import url('https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
+@import "./styles/variables";
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+body {
+  font-family: 'Roboto', sans-serif;
+  background: #fafafa;
+  min-height: 100vh;
+  padding: 24px;
+}
+.container {
   max-width: 1200px;
   margin: 0 auto;
-}
-
-.projects-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-  gap: 32px;
+  grid-template-columns: 350px 1fr;
+  gap: 24px;
 }
-
-@media (max-width: 768px) {
-  .projects {
-    padding: 60px 20px;
+.main-content {
+  min-width: 0;
+  header {
+    margin-bottom: 32px;
+    h1 {
+      color: $text-main;
+      font-size: 34px;
+      font-weight: 400;
+      margin-bottom: 8px;
+    }
+    .subtitle {
+      color: $text-light;
+      font-size: 16px;
+      font-weight: 400;
+    }
   }
-  
-  .projects-grid {
+}
+@media (max-width: 968px) {
+  .container {
     grid-template-columns: 1fr;
-    gap: 24px;
+  }
+  aside {
+    position: relative;
+    top: 0;
+  }
+}
+@media (max-width: 768px) {
+  body {
+    padding: 16px;
+  }
+  h1 {
+    font-size: 28px;
+  }
+  .post {
+    padding: 16px;
   }
 }
 </style>
