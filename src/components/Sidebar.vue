@@ -1,108 +1,162 @@
 <template>
-    <aside>
-        <div class="profile-card">
-            <div class="profile-image">👨‍💻</div>
-            <h2 class="profile-name">Mario Rossi</h2>
-            <p class="profile-title">Full-Stack Developer</p>
-            <div class="divider"></div>
-            <p class="profile-bio">
-                Sviluppatore appassionato di design e tecnologia.
-                Creo esperienze digitali che uniscono estetica e funzionalità.
-                Sempre alla ricerca di nuove sfide creative! 🚀
-            </p>
-            <div class="divider"></div>
-            <div class="stats">
-                <div class="stat-item">
-                    <div class="stat-number">24</div>
-                    <div class="stat-label">Progetti</div>
-                </div>
-                <div class="stat-item">
-                    <div class="stat-number">3</div>
-                    <div class="stat-label">Anni</div>
-                </div>
-                <div class="stat-item">
-                    <div class="stat-number">12</div>
-                    <div class="stat-label">Skills</div>
-                </div>
-            </div>
+  <aside class="sidebar">
+    <div class="profile-card">
+      <div class="profile-image">
+        <img src="https://avatars.githubusercontent.com/u/102023558?v=4" alt="Valentino Mettifogo avatar" class="avatar-img" />
+      </div>
+      <h2 class="profile-name">Valentino Mettifogo</h2>
+      <p class="profile-title">BI Developer & Team Leader</p>
+      <p class="profile-location">📍 Padua, Italy</p>
+      <div class="divider"></div>
+      <div class="profile-section">
+        <h3 class="section-title">Skills</h3>
+        <div class="skills">
+          <span class="skill-tag">Qlik Sense</span>
+          <span class="skill-tag">SQL</span>
+          <span class="skill-tag">Vue.js</span>
+          <span class="skill-tag">JavaScript</span>
+          <span class="skill-tag">Python</span>
+          <span class="skill-tag">Data Modeling</span>
         </div>
-    </aside>
+      </div>
+      <div class="divider"></div>
+      <div class="profile-section">
+        <h3 class="section-title">Languages</h3>
+        <p class="language">🇮🇹 Italian — Native</p>
+        <p class="language">🇬🇧 English — B2</p>
+      </div>
+      <div class="divider"></div>
+      <div class="profile-section">
+        <h3 class="section-title">Interests</h3>
+        <p class="interests">☕ Coffee • 🖥️ IT • 🐈 Cats</p>
+      </div>
+      <div class="divider"></div>
+      <div class="stats">
+        <div class="stat-item">
+          <div class="stat-number">8+</div>
+          <div class="stat-label">Years</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-number">4</div>
+          <div class="stat-label">Repos</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-number">2</div>
+          <div class="stat-label">Certs</div>
+        </div>
+      </div>
+    </div>
+  </aside>
 </template>
 
-<style lang="scss" scoped>
-@import "../styles/variables";
-
-aside {
+<style scoped>
+.sidebar {
   position: sticky;
   top: 24px;
-  height: fit-content;
-  .profile-card {
-    background: white;
-    border-radius: $radius;
-    padding: 24px;
-    box-shadow: $shadow;
-    transition: box-shadow 0.3s ease;
-    &:hover {
-      box-shadow: $shadow-hover;
-    }
-    .profile-image {
-      width: 120px;
-      height: 120px;
-      border-radius: 50%;
-      margin: 0 auto 20px;
-      background: linear-gradient(135deg, $primary, $secondary);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 3em;
-      box-shadow: 0 4px 8px rgba(0,0,0,0.15);
-    }
-    .profile-name {
-      color: $text-main;
-      font-size: 24px;
-      font-weight: 500;
-      margin-bottom: 8px;
-      text-align: center;
-    }
-    .profile-title {
-      color: $danger;
-      font-size: 14px;
-      font-weight: 500;
-      text-align: center;
-      margin-bottom: 16px;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-    }
-    .profile-bio {
-      color: #616161;
-      line-height: 1.6;
-      font-size: 14px;
-      text-align: center;
-    }
-    .divider {
-      height: 1px;
-      background: $tag-border;
-      margin: 20px 0;
-    }
-    .stats {
-      display: flex;
-      justify-content: space-around;
-      text-align: center;
-      .stat-item {
-        flex: 1;
-        .stat-number {
-          color: $primary;
-          font-size: 24px;
-          font-weight: 500;
-        }
-        .stat-label {
-          color: $text-light;
-          font-size: 12px;
-          text-transform: uppercase;
-          letter-spacing: 0.5px;
-        }
-      }
-    }
-  }
+  min-height: 400px;
+  height: 90vh;
+  display: flex;
+  align-items: flex-start;
+}
+.profile-card {
+  padding: 24px;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+.profile-image {
+  width: 200px;
+  height: 200px;
+  border-radius: 50%;
+  margin: 0 auto 16px;
+  background: var(--main-color);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2em;
+  color: white;
+  overflow: hidden;
+}
+.avatar-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 50%;
+  display: block;
+}
+.profile-name {
+  color: #24292f;
+  font-size: 20px;
+  font-weight: 600;
+  margin-bottom: 4px;
+  text-align: center;
+}
+.profile-title {
+  color: #656d76;
+  font-size: 16px;
+  text-align: center;
+  margin-bottom: 8px;
+  font-weight: 600;
+}
+.profile-location {
+  color: #656d76;
+  font-size: 14px;
+  text-align: center;
+  margin-bottom: 16px;
+}
+.divider {
+  height: 1px;
+  background: #d1d9e0;
+  margin: 16px 0;
+}
+.profile-section {
+  margin-bottom: 8px;
+}
+.section-title {
+  color: #24292f;
+  font-size: 14px;
+  font-weight: 600;
+  margin-bottom: 8px;
+  text-align: center;
+}
+.skills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  justify-content: center;
+}
+.skill-tag {
+  background: #f0f8f4;
+  color: var(--main-color);
+  padding: 2px 8px;
+  border-radius: 12px;
+  font-size: 11px;
+  font-weight: 500;
+  border: 1px solid var(--main-color);
+}
+.language, .interests {
+  color: #656d76;
+  font-size: 12px;
+  text-align: center;
+  margin: 2px 0;
+}
+.stats {
+  display: flex;
+  justify-content: space-around;
+  text-align: center;
+}
+.stat-item {
+  flex: 1;
+}
+.stat-number {
+  color: var(--main-color);
+  font-size: 18px;
+  font-weight: 600;
+}
+.stat-label {
+  color: #656d76;
+  font-size: 12px;
 }
 </style>

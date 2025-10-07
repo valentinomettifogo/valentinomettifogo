@@ -1,14 +1,15 @@
 <template>
   <div class="container">
     <Sidebar />
-    <main class="main-content">
-      <header>
-        <h1>I Miei Progetti</h1>
-        <p class="subtitle">Portfolio & Blog Creativo</p>
-      </header>
-      <div class="posts-container">
-        <Post v-for="project in projects" :key="project.id" :project="project" />
-      </div>
+    <main>
+      <About />
+      <section class="projects-section">
+        <header class="section-header">
+          <h2 class="section-title">Featured Projects</h2>
+          <p class="section-subtitle">Open source projects and experiments</p>
+        </header>
+        <Post v-for="post in posts" :key="post.id" :post="post" />
+      </section>
     </main>
   </div>
 </template>
@@ -16,74 +17,100 @@
 <script setup>
 import { ref, onMounted } from 'vue';
 import Sidebar from './components/Sidebar.vue';
+import About from './components/About.vue';
 import Post from './components/Post.vue';
 
-const projects = ref([]);
+const posts = ref([]);
 
 onMounted(async () => {
-  const res = await fetch('src/data/projects.json');
+  const res = await fetch('src/data/post.json');
   const data = await res.json();
-  projects.value = data.projects;
+  posts.value = data.posts;
 });
 </script>
 
-<style lang="scss">
-@import url('https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
-@import "./styles/variables";
+<style>
+:root {
+  --main-color: #42b883;
+}
 
 * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
 }
+
 body {
-  font-family: 'Roboto', sans-serif;
-  background: #fafafa;
-  min-height: 100vh;
-  padding: 24px;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif;
+  background: #ffffff;
+  color: #24292f;
+  line-height: 1.5;
 }
+
 .container {
   max-width: 1200px;
   margin: 0 auto;
   display: grid;
-  grid-template-columns: 350px 1fr;
+  grid-template-columns: 300px 1fr;
   gap: 24px;
+  padding: 24px;
 }
-.main-content {
-  min-width: 0;
-  header {
-    margin-bottom: 32px;
-    h1 {
-      color: $text-main;
-      font-size: 34px;
-      font-weight: 400;
-      margin-bottom: 8px;
-    }
-    .subtitle {
-      color: $text-light;
-      font-size: 16px;
-      font-weight: 400;
-    }
-  }
+
+.about-section {
+  margin-bottom: 32px;
+  padding-bottom: 24px;
+  border-bottom: 1px solid #d1d9e0;
 }
-@media (max-width: 968px) {
-  .container {
-    grid-template-columns: 1fr;
-  }
-  aside {
-    position: relative;
-    top: 0;
-  }
+
+.main-title {
+  color: #24292f;
+  font-size: 24px;
+  font-weight: 600;
+  margin: 0 0 16px 0;
 }
+
+.about-text {
+  color: #656d76;
+  font-size: 16px;
+  line-height: 1.6;
+  margin: 0;
+}
+
+.about-text strong {
+  color: var(--main-color);
+  font-weight: 600;
+}
+
+.projects-section {
+  margin-bottom: 24px;
+}
+
+.section-header {
+  margin-bottom: 24px;
+}
+
+.section-title {
+  color: #24292f;
+  font-size: 20px;
+  font-weight: 600;
+  margin: 0 0 4px 0;
+}
+
+.section-subtitle {
+  color: #656d76;
+  font-size: 14px;
+  margin: 0;
+}
+
 @media (max-width: 768px) {
-  body {
-    padding: 16px;
+  .container {
+    grid-template-columns: 1fr !important;
+    padding: 12px;
   }
-  h1 {
-    font-size: 28px;
-  }
-  .post {
-    padding: 16px;
+
+  aside.sidebar {
+    position: relative !important;
+    top: 0 !important;
   }
 }
 </style>

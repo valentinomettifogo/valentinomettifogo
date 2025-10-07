@@ -1,133 +1,161 @@
 <template>
-    <div class="post">
-        <div class="header">
-            <div class="avatar">{{ project.icon }}</div>
-            <div>
-                <h3>{{ project.title }}</h3>
-                <span class="date">{{ project.date || 'Data non disponibile' }}</span>
+    <div class="post-card">
+        <div class="post-image-wrapper">
+            <img class="post-image" src="https://picsum.photos/300/200" alt="Post image" />
+        </div>
+        <div class="post">
+            <div class="post-header">
+                <h3 class="post-title">{{ post.title }}</h3>
+                <span v-if="post.visibility === 'Public'" class="badge">Public</span>
             </div>
-        </div>
-        <div class="content">
-            <p>{{ project.description }}</p>
-        </div>
-        <div class="tags">
-            <span v-for="tech in project.technologies" :key="tech" class="tag">#{{ tech }}</span>
-        </div>
-        <div class="links">
-            <a v-if="project.links?.url" :href="project.links.url" class="link" target="_blank">Sito</a>
-            <a v-if="project.links?.github" :href="project.links.github" class="link" target="_blank">GitHub</a>
-            <a v-if="project.links?.docs" :href="project.links.docs" class="link" target="_blank">Docs</a>
+            <p class="post-description">{{ post.description }}</p>
+            <div class="post-meta">
+                <span v-for="tech in post.technologies?.slice(0, 1)" :key="tech" class="post-tech">
+                    <span class="tech-dot"></span>
+                    {{ tech }}
+                </span>
+            </div>
+            <div class="post-actions">
+                <div style="flex:1"></div>
+                <a v-if="post.links?.url" :href="post.links.url"
+                    target="_blank" class="btn">Link pubblico</a>
+                <a v-if="post.links?.github" :href="post.links.github" target="_blank"
+                    class="btn">Repository</a>
+            </div>
         </div>
     </div>
 </template>
 
 <script setup>
 defineProps({
-    project: {
+    post: {
         type: Object,
         required: true
     }
 })
 </script>
 
-<style lang="scss" scoped>
-@import "../styles/variables";
+<style scoped>
+.post-card {
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    border: 1px solid #d1d9e0;
+    margin-bottom: 16px;
+    overflow: hidden;
+    min-height: 180px;
+    padding: 0;
+}
+
+.post-image-wrapper {
+    flex: 0 0 300px;
+    height: 100%;
+    display: flex;
+    align-items: stretch;
+}
+
+.post-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 0;
+    margin: 0;
+    background: #f0f0f0;
+    display: block;
+}
 
 .post {
-    background: white;
-    border-radius: $radius;
-    padding: 24px;
-    margin-bottom: 16px;
-    box-shadow: $shadow;
-    transition: box-shadow 0.3s ease, transform 0.3s ease;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    padding: 20px;
+}
 
-    &:hover {
-        box-shadow: $shadow-hover;
-        transform: translateY(-2px);
-    }
+.post-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 12px;
+}
 
-    .header {
-        display: flex;
-        align-items: center;
-        margin-bottom: 16px;
+.post-title {
+    color: #212529;
+    font-size: 1.25rem;
+    font-weight: 600;
+    margin: 0;
+}
 
-        .avatar {
-            width: 48px;
-            height: 48px;
-            border-radius: 50%;
-            background: linear-gradient(135deg, $primary, $secondary);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-size: 24px;
-            margin-right: 16px;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-        }
+.badge {
+    display: inline-block;
+    padding: 0.35em 0.65em;
+    font-size: 0.70em;
+    font-weight: 700;
+    color: #fff;
+    background-color: var(--main-color);
+    border-radius: 0.25rem;
+}
 
-        h3 {
-            color: $text-main;
-            font-size: 20px;
-            font-weight: 500;
-            margin-bottom: 4px;
-        }
+.post-description {
+    color: #656d76;
+    line-height: 1.4;
+    margin-bottom: 12px;
+    font-size: 14px;
+}
 
-        .date {
-            color: $text-light;
-            font-size: 14px;
-            font-weight: 400;
-        }
-    }
+.post-meta {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    font-size: 0.95em;
+    color: #656d76;
+    margin-bottom: 12px;
+}
 
-    .content {
-        color: $text-content;
-        line-height: 1.6;
-        margin-bottom: 16px;
-        font-size: 14px;
-    }
+.post-tech {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
 
-    .tags {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 8px;
-        margin-bottom: 16px;
+.tech-dot {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: var(--main-color);
+    display: inline-block;
+}
 
-        .tag {
-            background: $tag-bg;
-            padding: 6px 12px;
-            border-radius: 16px;
-            font-size: 12px;
-            color: #616161;
-            font-weight: 500;
-            border: 1px solid $tag-border;
-        }
-    }
+.post-actions {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
 
-    .links {
-        display: flex;
-        gap: 12px;
+.btn {
+    display: inline-block;
+    font-weight: 400;
+    color: var(--main-color);
+    text-align: center;
+    vertical-align: middle;
+    user-select: none;
+    background-color: transparent;
+    border: 1px solid var(--main-color);
+    padding: 0.375rem 0.75rem;
+    font-size: 1rem;
+    line-height: 1.5;
+    border-radius: 0.25rem;
+    text-decoration: none;
+    transition: background-color 0.15s, color 0.15s;
+    color: var(--main-color);
+    background-color: #fff;
+    border-color: var(--main-color);
+}
 
-        .link {
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            background: $danger;
-            color: white;
-            padding: 10px 24px;
-            border-radius: 4px;
-            text-decoration: none;
-            font-weight: 500;
-            font-size: 14px;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            transition: background 0.3s ease, box-shadow 0.3s ease;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-
-            &:hover {
-                background: $danger-dark;
-                box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
-            }
-        }
-    }
+.btn:hover {
+    background-color: var(--main-color);
+    color: #fff;
 }
 </style>
