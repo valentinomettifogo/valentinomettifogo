@@ -1,0 +1,8 @@
+@import 'tailwindcss';
+@plugin '@tailwindcss/forms';
+@plugin '@tailwindcss/typography';
+@plugin "daisyui/index.js";
+
+body {
+  min-height: 100vh;
+}

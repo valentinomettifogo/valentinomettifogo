@@ -6,7 +6,7 @@
 [![LinkedIn](https://img.shields.io/badge/LinkedIn-valentino--mettifogo-0A66C2?logo=linkedin)](https://www.linkedin.com/in/valentino-mettifogo/)
 [![Website](https://img.shields.io/badge/Portfolio-online-42b883?logo=vue.js)](https://valentinomettifogo.github.io/)
 
-> BI Developer & Web Enthusiast | Vue.js, Vite, Open Source
+> BI Developer & Web Enthusiast | QLik, Svelte, Open Source
 
 ---
 
