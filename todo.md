@@ -1,0 +1,2 @@
+- è possibile mettere alcuni post disponibili solo per alcuni?
+- creare 3 tipi di accesso: all, privato (li scelgo io a mano), lavoro (dove lavoro sono email smi)
