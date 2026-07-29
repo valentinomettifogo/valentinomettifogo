@@ -7,7 +7,7 @@
 </script>
 
 <svelte:head>
-	<title>Side Quest</title>
+	<title>Valentino Mettifogo</title>
 	<meta name="description" content="Personal feed of small projects and experiments." />
 </svelte:head>
 

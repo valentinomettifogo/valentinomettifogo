@@ -16,17 +16,9 @@
 		{post.title}
 	</h2>
 
-	<p class="mt-2 leading-relaxed text-neutral-600">
-		{post.body}
-	</p>
-
-	<a
-		href={post.link}
-		target="_blank"
-		rel="noreferrer"
-		class="mt-4 inline-flex items-center gap-1 text-sm font-medium text-teal-600 hover:text-teal-800 hover:underline underline-offset-4 focus-visible:outline-2 focus-visible:outline-teal-500 focus-visible:outline-offset-2"
+	<div
+		class="prose prose-neutral mt-2 max-w-none prose-headings:text-neutral-900 prose-p:text-neutral-600 prose-a:text-teal-600 prose-a:no-underline hover:prose-a:underline prose-strong:text-neutral-900"
 	>
-		{post.linkLabel}
-		<span aria-hidden="true">→</span>
-	</a>
+		{@html post.html}
+	</div>
 </article>

@@ -3,6 +3,11 @@
 		Side Quest
 	</h1>
 	<p class="mt-3 text-neutral-600">
-		Small projects, built one weekend at a time.
+		Small projects, shipped over a weekend and pushed live anyway. No roadmap, no
+		backlog — just whatever I felt like building next.
+	</p>
+
+	<p class="mt-8 text-sm text-neutral-400">
+		Valentino Mettifo<span class="font-mono font-semibold text-[#00ADD8]">go</span>
 	</p>
 </header>

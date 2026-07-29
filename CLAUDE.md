@@ -7,7 +7,7 @@ Guidance for Claude Code when working in this repository.
 Personal site and webhook hub. SvelteKit 2 + Svelte 5 (runes) + Tailwind v4, deployed on
 Vercel, with Supabase for auth and data. Three parts:
 
-1. **Public mini-blog** at `/` — posts come from a JSON file in the repo.
+1. **Public mini-blog** at `/` — posts are Markdown files in the repo.
 2. **Qlik Cloud webhook** at `/api/webhooks/qlik` — receives reload events from several
    Qlik tenants, filters the failures, resolves app and space names through the tenant's
    REST API, and sends an alert to Google Chat. It is a port of a Google Apps Script.
@@ -94,7 +94,7 @@ Two deliberate exceptions, both because they are contracts already configured el
 
 | Task | Where |
 |---|---|
-| A blog post | `src/lib/data/posts.json` |
+| A blog post | `src/lib/posts/*.md` — one file per post, `date`/`title` frontmatter + a markdown body; images go in `static/posts/<slug>/` |
 | A notification channel | Implement `Notifier` in `src/lib/server/notify/`, add a branch to `notifierFor()` |
 | A protected page | New route + a role check in its `+page.server.ts`, like `src/routes/portal/` |
 | A generic example (client, host) | Use `Acme` / `tenant.eu.qlikcloud.com` — never a real customer name |
@@ -106,7 +106,8 @@ Two deliberate exceptions, both because they are contracts already configured el
 src/
 ├── lib/
 │   ├── components/        # Navbar, PostList…, plus alerts/ for the tenant panel
-│   ├── data/posts.json
+│   ├── posts/*.md         # blog post content (frontmatter + markdown body)
+│   ├── posts.ts           # parses posts/*.md into Post
 │   ├── server/            # server-only: qlik, tenants, notify, crypto, supabase, authz
 │   └── types.ts           # types shared between server and client
 └── routes/

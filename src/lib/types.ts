@@ -2,9 +2,8 @@ export interface Post {
 	id: string;
 	date: string;
 	title: string;
-	body: string;
-	link: string;
-	linkLabel: string;
+	/** Markdown body, already rendered to HTML — render with `{@html}`. */
+	html: string;
 }
 
 export type Role = 'user' | 'analytics' | 'admin';
