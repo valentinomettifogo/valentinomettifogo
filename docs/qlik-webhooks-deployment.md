@@ -160,7 +160,7 @@ Poi, dominio e auth:
    **Non** l'URL dell'app. Google parla con Supabase, e Supabase parla con l'app. Sbagliare
    qui è la causa numero uno di `redirect_uri_mismatch`.
 
-**Verifica:** apri `https://valentinomettifogo.com/api/webhooks/qlik` nel browser. Deve
+**Verifica:** apri `https://www.valentinomettifogo.com/api/webhooks/qlik` nel browser. Deve
 rispondere `405 — Qlik webhook endpoint: POST only.` Se vedi la pagina di errore 404 di
 SvelteKit, il deploy non è andato.
 
@@ -200,7 +200,7 @@ amministratore.
    |---|---|
    | **Name** | `Alert reload falliti` |
    | **Description** | a piacere |
-   | **Post to URL** | `https://valentinomettifogo.com/api/webhooks/qlik?cliente=Argea` |
+   | **Post to URL** | `https://www.valentinomettifogo.com/api/webhooks/qlik?cliente=Argea` — **con il `www.`**, vedi sotto |
    | **Event type** | *Reload finished* (`com.qlik.v1.reload.finished`) |
    | **Level** | `Tenant` — serve per vedere i reload di tutti, non solo i tuoi |
    | **Owner** | te stesso |
@@ -219,6 +219,16 @@ amministratore.
 
 4. Il campo **Secret** lascialo vuoto: è la firma HMAC di cui sopra, che oggi non
    verifichiamo.
+
+> **Il `www.` non è un dettaglio.** Su Vercel il dominio primario è
+> `www.valentinomettifogo.com` e l'apex `valentinomettifogo.com` risponde con un
+> **308 Permanent Redirect**. I browser lo seguono in silenzio, i client webhook no:
+> Qlik registra `redirects are forbidden 308 (308 Permanent Redirect)` e butta via
+> l'evento, senza riprovare. La stessa regola vale per gli URL di Supabase
+> (Site URL e Redirect URLs), che devono anch'essi puntare al `www.`.
+>
+> Se preferisci l'apex, l'alternativa è invertire il primario in Vercel →
+> Settings → Domains; ma cambiare un URL nel webhook costa meno.
 
 Attenzione al parametro `cliente`:
 
@@ -277,6 +287,89 @@ Poi ricontrolla **Administration → Webhooks → lo storico di consegna** (Qlik
 fallire un reload. **L'alert deve arrivare lo stesso**, con l'ID dell'app al posto del
 nome. L'arricchimento peggiora, non blocca mai. È l'invariante su cui è costruito tutto,
 ereditata dal vecchio Apps Script.
+
+---
+
+## Non arriva niente: da dove si guarda
+
+In ordine. Ogni passo esclude metà dei possibili colpevoli, quindi non saltarne uno.
+
+### 1. Qlik ha chiamato? — storico di consegna
+
+**Administration → Webhooks → il tuo webhook → storico** (7 giorni di retention). È la
+prima cosa da guardare sempre, perché distingue subito i due mondi:
+
+- **Nessuna riga** → il problema è tutto lato Qlik: webhook disattivato, evento sbagliato,
+  `Level` a `User` mentre il reload lo lancia un altro utente. Il tuo sito non c'entra.
+- **`redirects are forbidden 308`** → manca il `www.` nell'URL. Qlik non segue i
+  redirect e scarta l'evento: la richiesta non raggiunge mai il codice, quindi nei log
+  di Vercel non trovi niente. Vedi la nota al punto 5.
+- **Altre righe** → leggi il codice di risposta e salta al punto 3.
+
+### 2. Il sito risponde? — prova a mano
+
+```bash
+curl -i https://www.valentinomettifogo.com/api/webhooks/qlik
+```
+
+Deve dare `405` e il testo `Qlik webhook endpoint: POST only.` Se dà 404, il deploy non
+contiene la route.
+
+Poi simula un fallimento, saltando Qlik del tutto:
+
+```bash
+curl -i -X POST "https://www.valentinomettifogo.com/api/webhooks/qlik?cliente=Argea" \
+  -H "x-webhook-token: <QLIK_WEBHOOK_TOKEN>" \
+  -H 'content-type: application/json' \
+  -d '{"id":"test","type":"com.qlik.v1.reload.finished","data":{"appId":"finto","status":"FAILED"}}'
+```
+
+Se qui arriva il messaggio in chat, la catena sito → Chat è sana e il problema è a monte
+(punto 1). Se non arriva, il codice di risposta ti dice cosa manca — vedi la tabella dei
+codici sopra.
+
+### 3. I log su Vercel
+
+Progetto → **Logs** (o **Observability → Logs**), filtro sul path
+`/api/webhooks/qlik`. Assicurati che il periodo selezionato copra il momento del test:
+il default è spesso "ultima ora".
+
+Ogni chiamata accettata scrive **una riga di riepilogo**:
+
+```
+[qlik-hook] { client: 'Argea', slug: 'argea', tenantFound: true,
+              hasApiKey: true, type: 'com.qlik.v1.reload.finished',
+              status: 'FAILED', appId: '8f3c…' }
+```
+
+Come si legge:
+
+| Cosa vedi | Cosa significa |
+|---|---|
+| nessuna riga | la richiesta non è mai arrivata, oppure è stata respinta con 401 |
+| `[qlik-hook] 401: token mismatch` | il token c'è ma è diverso da quello su Vercel |
+| `[qlik-hook] 401: QLIK_WEBHOOK_TOKEN is not set` | la env non è arrivata in produzione |
+| `status` diverso da `FAILED`/`error` | l'evento è arrivato ma era un reload riuscito |
+| `tenantFound: false` | lo slug in `?cliente=` non corrisponde a nessuna riga di `/portal` |
+| `hasApiKey: false` | tenant trovato ma senza chiave: alert sì, nomi no |
+| `GOOGLE_CHAT_WEBHOOK_URL is not set` | manca la env dell'URL di Chat |
+| `[qlik-hook] alert sent to google-chat` | inviato davvero: se non lo vedi, guarda **quale** spazio |
+
+> **La causa numero uno.** Su Vercel le variabili d'ambiente vengono lette **al momento
+> del deploy**: se le hai aggiunte dopo aver pubblicato, il deploy in aria non le vede.
+> Deployments → l'ultimo → **Redeploy**. Fallo prima di cercare altrove.
+
+### 4. Vedere il payload vero
+
+Se tutto sembra a posto ma lo `status` non è quello che ti aspetti, aggiungi su Vercel:
+
+```
+QLIK_WEBHOOK_DEBUG=1
+```
+
+e rifai il deploy. Da quel momento ogni evento accettato finisce nei log per intero
+(`[qlik-hook] raw payload: {...}`), così vedi esattamente come Qlik lo chiama.
+**Rimettila a vuoto quando hai finito**: è molto verbosa.
 
 ---
 
