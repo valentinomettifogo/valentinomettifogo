@@ -36,7 +36,13 @@ function isAuthorized(token: string): boolean {
 
 export const POST: RequestHandler = async ({ request, url }) => {
 	if (!isAuthorized(readToken(url, request))) {
-		// No detail in the body: it must not reveal whether the tenant exists.
+		// No detail in the body: it must not reveal whether the tenant exists. The
+		// log line says which of the two failure modes it was, because from the
+		// outside "wrong token" and "server misconfigured" look identical.
+		console.warn(
+			'[qlik-hook] 401:',
+			env.QLIK_WEBHOOK_TOKEN ? 'token mismatch' : 'QLIK_WEBHOOK_TOKEN is not set'
+		);
 		return text('unauthorized', { status: 401 });
 	}
 
@@ -59,6 +65,27 @@ export const POST: RequestHandler = async ({ request, url }) => {
 	}
 
 	const event = parseQlikEvent(payload);
+
+	/**
+	 * One line per accepted call, always. Without it the happy paths are silent and
+	 * the Vercel logs cannot tell "Qlik never called" from "called and ignored" —
+	 * which is the first fork of every investigation. No secrets in here.
+	 */
+	console.log('[qlik-hook]', {
+		client,
+		slug,
+		tenantFound: Boolean(tenant),
+		hasApiKey: Boolean(tenant?.apiKey),
+		type: event.type,
+		status: event.status,
+		appId: event.appId
+	});
+
+	// QLIK_WEBHOOK_DEBUG=1 dumps the whole event. Turn it on to inspect the real
+	// shape a tenant sends, then turn it off: it is verbose, not sensitive.
+	if (env.QLIK_WEBHOOK_DEBUG === '1') {
+		console.log('[qlik-hook] raw payload:', JSON.stringify(payload));
+	}
 
 	// Most of the traffic is successful reloads: 200 and move on, no noise.
 	if (!isFailureStatus(event.status)) {
@@ -86,7 +113,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
 
 		const notifier = notifierFor();
 		if (!notifier) {
-			console.error('[qlik-hook] no channel configured for', client);
+			console.error('[qlik-hook] GOOGLE_CHAT_WEBHOOK_URL is not set — nothing to notify', client);
 			return json({ ok: false, error: 'no_notifier' }, { status: 500 });
 		}
 
@@ -98,6 +125,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
 			return json({ ok: false, action: 'chat_failed', status: sent.status }, { status: 502 });
 		}
 
+		console.log('[qlik-hook] alert sent to', notifier.channel, '-', appName);
 		return json({ ok: true, action: 'sent', client, appName });
 	} catch (err) {
 		console.error('[qlik-hook] internal error:', err instanceof Error ? err.stack : err);

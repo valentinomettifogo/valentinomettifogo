@@ -15,6 +15,8 @@ export type QlikEvent = {
 	/** App name when Qlik includes it: the fallback before the raw appId. */
 	name: string | null;
 	source: string | null;
+	/** CloudEvents type, e.g. `com.qlik.v1.reload.finished`. Logged, not acted on. */
+	type: string | null;
 };
 
 export function parseQlikEvent(payload: unknown): QlikEvent {
@@ -29,7 +31,8 @@ export function parseQlikEvent(payload: unknown): QlikEvent {
 		spaceId: str(data.spaceId),
 		status: str(data.status) ?? 'No status',
 		name: str(data.name),
-		source: str(event.source)
+		source: str(event.source),
+		type: str(event.type)
 	};
 }
 
