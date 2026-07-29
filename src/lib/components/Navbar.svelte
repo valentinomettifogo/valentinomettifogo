@@ -6,9 +6,13 @@
 		role
 	}: { user: { id: string; email: string | null } | null; role: Role | null } = $props();
 
-	// Cosmetic only: /portal enforces the same rule server-side in its load and in
-	// every action. Hiding the link just avoids sending people to a 403.
+	// Cosmetic only: each page enforces the same rule server-side in its load and in
+	// every action. Hiding a link just avoids sending people to a 403.
 	const canSeePortal = $derived(role === 'analytics' || role === 'admin');
+	const canSeeAdmin = $derived(role === 'admin');
+
+	const link =
+		'inline-flex items-center rounded-md border border-neutral-300 px-3 py-1.5 font-medium text-neutral-700 hover:bg-neutral-50';
 </script>
 
 <header class="border-b border-neutral-200">
@@ -18,12 +22,10 @@
 		<div class="flex items-center gap-3 text-sm">
 			{#if user}
 				{#if canSeePortal}
-					<a
-						href="/portal"
-						class="inline-flex items-center rounded-md border border-neutral-300 px-3 py-1.5 font-medium text-neutral-700 hover:bg-neutral-50"
-					>
-						Portal
-					</a>
+					<a href="/portal" class={link}>Portal</a>
+				{/if}
+				{#if canSeeAdmin}
+					<a href="/admin" class={link}>Users</a>
 				{/if}
 				<form method="POST" action="/auth/logout">
 					<button

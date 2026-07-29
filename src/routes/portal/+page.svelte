@@ -29,17 +29,25 @@
 	{/if}
 
 	<section class="mt-8">
-		<TenantTable tenants={data.tenants} onEdit={(t) => (editing = t)} />
+		<TenantTable tenants={data.tenants} onEdit={data.canEdit ? (t) => (editing = t) : undefined} />
 	</section>
 
-	<section class="mt-10 rounded-md border border-neutral-200 p-6">
-		<h2 class="mb-5 text-sm font-semibold text-neutral-900">
-			{editing ? `Edit ${editing.client}` : 'New tenant'}
-		</h2>
-		<!-- The key remounts the form when the row changes, so fields do not carry over
-		     values from the previously edited tenant. -->
-		{#key editing?.id ?? 'new'}
-			<TenantForm {editing} onDone={() => (editing = null)} />
-		{/key}
-	</section>
+	{#if data.canEdit}
+		<section class="mt-10 rounded-md border border-neutral-200 p-6">
+			<h2 class="mb-5 text-sm font-semibold text-neutral-900">
+				{editing ? `Edit ${editing.client}` : 'New tenant'}
+			</h2>
+			<!-- The key remounts the form when the row changes, so fields do not carry over
+			     values from the previously edited tenant. -->
+			{#key editing?.id ?? 'new'}
+				<TenantForm {editing} onDone={() => (editing = null)} />
+			{/key}
+		</section>
+	{:else}
+		<!-- Cosmetic: the actions in +page.server.ts refuse non-admins regardless. -->
+		<p class="mt-8 text-sm text-neutral-500">
+			Read-only. Adding or editing a tenant requires the <code class="font-mono text-xs">admin</code
+			> role.
+		</p>
+	{/if}
 </main>

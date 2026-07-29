@@ -4,7 +4,8 @@
 
 	type Props = {
 		tenants: TenantView[];
-		onEdit: (tenant: TenantView) => void;
+		/** Omitted for read-only viewers: no Edit button is rendered at all. */
+		onEdit?: (tenant: TenantView) => void;
 	};
 
 	let { tenants, onEdit }: Props = $props();
@@ -98,7 +99,9 @@
 								>
 									Check
 								</button>
-								<button type="button" onclick={() => onEdit(tenant)} class={rowButton}>Edit</button>
+								{#if onEdit}
+									<button type="button" onclick={() => onEdit(tenant)} class={rowButton}>Edit</button>
+								{/if}
 							</div>
 						</td>
 					</tr>

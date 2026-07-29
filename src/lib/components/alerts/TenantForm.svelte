@@ -38,7 +38,7 @@
 			name="client"
 			class={field}
 			value={editing?.client ?? ''}
-			placeholder="Argea"
+			placeholder="Acme"
 			required
 		/>
 		<!-- ?cliente= is the real query parameter already configured on the Qlik
@@ -53,7 +53,7 @@
 			name="host"
 			class={field}
 			value={editing?.host ?? ''}
-			placeholder="argea.eu.qlikcloud.com"
+			placeholder="tenant.eu.qlikcloud.com"
 			required
 		/>
 		<p class={hint}>Used to resolve app and space names. No https://, no trailing slash.</p>

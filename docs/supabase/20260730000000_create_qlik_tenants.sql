@@ -11,7 +11,7 @@ create table if not exists public.qlik_tenants (
   cliente    text not null,
   -- Webhook lookup key: "San Marco" -> "sanmarco".
   slug       text generated always as (lower(regexp_replace(cliente, '\s', '', 'g'))) stored,
-  -- Tenant host, e.g. argea.eu.qlikcloud.com. Authoritative: tenants that do not
+  -- Tenant host, e.g. tenant.eu.qlikcloud.com. Authoritative: tenants that do not
   -- follow the <slug>.eu.qlikcloud.com pattern only work thanks to this column.
   host       text not null,
   -- SERVER ONLY. It must never appear in a select whose result reaches a load.

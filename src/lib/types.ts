@@ -9,6 +9,19 @@ export interface Post {
 
 export type Role = 'user' | 'analytics' | 'admin';
 
+/** The three roles in assignment order, for rendering pickers. */
+export const ROLES: readonly Role[] = ['user', 'analytics', 'admin'];
+
+/** A row of `public.users` as shown in the /admin table. */
+export interface UserView {
+	id: string;
+	email: string | null;
+	role: Role;
+	createdAt: string;
+	/** True for the signed-in admin looking at the list: their own role is locked. */
+	isSelf: boolean;
+}
+
 /**
  * A Qlik tenant projection that is safe to send to the browser: by construction
  * it has no `api_key` field. The full row lives in `$lib/server/tenants.ts`.

@@ -11,25 +11,34 @@ function str(data: FormData, key: string): string | null {
 	return trimmed === '' ? null : trimmed;
 }
 
-/**
- * Re-asserted in every action, not just in `load`: this is the page that writes
- * customers' Qlik API keys, so the guard lives next to each write rather than
- * being inherited from the page that rendered the form.
- */
-function requireAnalytics(locals: App.Locals): void {
+/** Reading the tenant list: `analytics` is enough. */
+function requireRead(locals: App.Locals): void {
 	if (!locals.session) redirect(303, '/auth/login');
 	if (!roleMeets(locals.role, 'analytics')) error(403, 'Forbidden');
 }
 
-export const load: PageServerLoad = async ({ locals }) => {
-	requireAnalytics(locals);
+/**
+ * Writing one: `admin` only. Re-asserted in every action rather than inherited
+ * from the page that rendered the form — this is where customers' Qlik API keys
+ * get written, and a hidden form is not a permission check.
+ */
+function requireWrite(locals: App.Locals): void {
+	requireRead(locals);
+	if (!roleMeets(locals.role, 'admin')) error(403, 'Forbidden');
+}
 
-	return { tenants: await listTenantViews() };
+export const load: PageServerLoad = async ({ locals }) => {
+	requireRead(locals);
+
+	return {
+		tenants: await listTenantViews(),
+		canEdit: roleMeets(locals.role, 'admin')
+	};
 };
 
 export const actions: Actions = {
 	saveTenant: async ({ request, locals }) => {
-		requireAnalytics(locals);
+		requireWrite(locals);
 
 		const data = await request.formData();
 		const client = str(data, 'client');
@@ -66,7 +75,7 @@ export const actions: Actions = {
 	},
 
 	deleteTenant: async ({ request, locals }) => {
-		requireAnalytics(locals);
+		requireWrite(locals);
 
 		const id = str(await request.formData(), 'id');
 		if (!id) return fail(400, { message: 'Missing id.' });

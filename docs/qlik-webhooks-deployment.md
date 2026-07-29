@@ -15,7 +15,7 @@ Qlik Cloud                    valentinomettifogo.com                Google Chat
 ──────────                    ──────────────────────                ───────────
 reload fallito
       │
-      │  POST  ?cliente=Argea                    ①
+      │  POST  ?cliente=Acme                    ①
       │  + QLIK_WEBHOOK_TOKEN  ─────────────────────►  /api/webhooks/qlik
                                                               │
                                                      scarta i reload OK
@@ -68,7 +68,8 @@ configurato tu.
    [`docs/supabase/20260730000000_create_qlik_tenants.sql`](supabase/20260730000000_create_qlik_tenants.sql).
    È idempotente, rieseguirlo non fa danni.
 2. Table editor → `public.users` → trova la tua riga (esiste dal primo login) e metti
-   `role` a **`analytics`** (o `admin`).
+   `role` a **`admin`**. Va fatto a mano una volta sola: da lì in poi i ruoli si
+   assegnano da `/admin`, e `admin` è l'unico ruolo che può censire i tenant.
 
 **Verifica:** in Table editor vedi `qlik_tenants`, con RLS attiva e zero policy. È voluto:
 solo il server la tocca, con la service-role key. Se un domani un bug passasse quella
@@ -145,12 +146,15 @@ node -e "console.log(require('crypto').randomBytes(36).toString('base64url'))"
 
 Poi, dominio e auth:
 
-1. Settings → Domains → aggiungi `valentinomettifogo.com`.
+1. Settings → Domains → aggiungi `valentinomettifogo.com`. Vercel elegge
+   `www.valentinomettifogo.com` a dominio primario e fa rispondere l'apex con un
+   redirect 308: **da qui in avanti, ovunque, si usa il `www.`** — vedi la nota al
+   punto 5, è il motivo per cui un webhook può fallire senza lasciare traccia nei log.
 2. Supabase → Authentication → URL Configuration:
-   - **Site URL**: `https://valentinomettifogo.com`
+   - **Site URL**: `https://www.valentinomettifogo.com`
    - **Redirect URLs**: aggiungi
      ```
-     https://valentinomettifogo.com/auth/callback
+     https://www.valentinomettifogo.com/auth/callback
      http://localhost:5173/auth/callback
      ```
 3. Google Cloud console → Credentials → il tuo OAuth client → **Authorized redirect URI**:
@@ -168,11 +172,12 @@ SvelteKit, il deploy non è andato.
 
 ## 4. Censire i tenant
 
-Vai su `https://valentinomettifogo.com/portal` e aggiungi una riga per cliente:
+Vai su `https://www.valentinomettifogo.com/portal` e aggiungi una riga per cliente
+(serve il ruolo `admin`: gli `analytics` la pagina la vedono ma in sola lettura):
 
-- **Client** — il nome così come lo vuoi leggere in chat, es. `Argea`. Da questo nasce lo
+- **Client** — il nome così come lo vuoi leggere in chat, es. `Acme`. Da questo nasce lo
   slug (minuscolo, spazi tolti) che dovrà comparire in `?cliente=`.
-- **Tenant host** — es. `argea.eu.qlikcloud.com`. Senza `https://`, senza slash finale.
+- **Tenant host** — es. `acme.eu.qlikcloud.com`. Senza `https://`, senza slash finale.
   È il campo che rende possibile lo step 2 anche per i tenant il cui host non segue lo
   schema `<nome>.eu.qlikcloud.com`.
 - **Qlik API key** — generata nel tenant del cliente: profilo → *Impostazioni del profilo*
@@ -200,7 +205,7 @@ amministratore.
    |---|---|
    | **Name** | `Alert reload falliti` |
    | **Description** | a piacere |
-   | **Post to URL** | `https://www.valentinomettifogo.com/api/webhooks/qlik?cliente=Argea` — **con il `www.`**, vedi sotto |
+   | **Post to URL** | `https://www.valentinomettifogo.com/api/webhooks/qlik?cliente=Acme` — **con il `www.`**, vedi sotto |
    | **Event type** | *Reload finished* (`com.qlik.v1.reload.finished`) |
    | **Level** | `Tenant` — serve per vedere i reload di tutti, non solo i tuoi |
    | **Owner** | te stesso |
@@ -233,7 +238,7 @@ amministratore.
 Attenzione al parametro `cliente`:
 
 - deve corrispondere, una volta normalizzato, allo slug della riga in `/portal`
-  (`Argea` → `argea`);
+  (`Acme` → `acme`);
 - se il nome ha spazi vanno codificati: `?cliente=San%20Marco`.
 
 Se sbagli, non perdi l'alert: arriva comunque, ma senza nome app e senza nome spazio,
@@ -265,7 +270,7 @@ rispondendo `200 {"action":"ignored"}`.
 ```
 🚨 ALLARME QLIK SENSE 🚨
 
-🏢 Cliente: Argea
+🏢 Cliente: Acme
 📁 App: Vendite Mensili
 🗂️ Spazio: Analytics
 ⚠️ Stato: Ricaricamento fallito
@@ -318,7 +323,7 @@ contiene la route.
 Poi simula un fallimento, saltando Qlik del tutto:
 
 ```bash
-curl -i -X POST "https://www.valentinomettifogo.com/api/webhooks/qlik?cliente=Argea" \
+curl -i -X POST "https://www.valentinomettifogo.com/api/webhooks/qlik?cliente=Acme" \
   -H "x-webhook-token: <QLIK_WEBHOOK_TOKEN>" \
   -H 'content-type: application/json' \
   -d '{"id":"test","type":"com.qlik.v1.reload.finished","data":{"appId":"finto","status":"FAILED"}}'
@@ -337,7 +342,7 @@ il default è spesso "ultima ora".
 Ogni chiamata accettata scrive **una riga di riepilogo**:
 
 ```
-[qlik-hook] { client: 'Argea', slug: 'argea', tenantFound: true,
+[qlik-hook] { client: 'Acme', slug: 'acme', tenantFound: true,
               hasApiKey: true, type: 'com.qlik.v1.reload.finished',
               status: 'FAILED', appId: '8f3c…' }
 ```
