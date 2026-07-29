@@ -1,46 +1,42 @@
-# Valentino Mettifogo
+# sv
 
-![Profile Banner](https://images.unsplash.com/photo-1461749280684-dccba630e2f6?auto=format&fit=crop&w=1200&q=80)
+Everything you need to build a Svelte project, powered by [`sv`](https://github.com/sveltejs/cli).
 
-[![GitHub](https://img.shields.io/badge/GitHub-valentinomettifogo-24292f?logo=github)](https://github.com/valentinomettifogo)
-[![LinkedIn](https://img.shields.io/badge/LinkedIn-valentino--mettifogo-0A66C2?logo=linkedin)](https://www.linkedin.com/in/valentino-mettifogo/)
-[![Website](https://img.shields.io/badge/Portfolio-online-FF3E00?logo=svelte)](https://github.com/valentinomettifogo)
+## Creating a project
 
-> BI Developer & Web Enthusiast | Qlik, Svelte, Open Source
+If you're seeing this, you've probably already done this step. Congrats!
 
----
+```sh
+# create a new project
+npx sv create my-app
+```
 
-Welcome to my portfolio! Here you'll find my open source projects, experiments, and notes about web development, business intelligence, and Go.
+To recreate this project with the same configuration:
 
-This repository is also my personal site, built with SvelteKit and deployed on Vercel.
+```sh
+# recreate this project
+npx sv@0.16.6 create --template minimal --types ts --add tailwindcss="plugins:none" --install npm valentinomettifogo
+```
 
-## 🚀 Live Projects
+## Developing
 
-- [Countdown Weekend](https://www.countdown-weekend.info/)
+Once you've created a project and installed dependencies with `npm install` (or `pnpm install` or `yarn`), start a development server:
 
-## 🛠️ Main Technologies
+```sh
+npm run dev
 
-- SvelteKit & Svelte 5
-- TypeScript
-- Go
-- Business Intelligence — Qlik Sense Cloud
-- Open Source
+# or start the server and open the app in a new browser tab
+npm run dev -- --open
+```
 
-## 🌟 Featured Projects
+## Building
 
-- **Countdown Weekend** — Animated countdown to the weekend, with day/night themes. [Live](https://www.countdown-weekend.info/) | [GitHub](https://github.com/valentinomettifogo/countdown-weekend)
-- **NhoCSS** — Super simple CSS framework for rapid prototyping. [GitHub](https://github.com/valentinomettifogo/NhoCSS)
-- **Cost Tracker** — Personal budget tracking app. [GitHub](https://github.com/valentinomettifogo/cost-tracker)
+To create a production version of your app:
 
-## 👋 About Me
+```sh
+npm run build
+```
 
-Hi! I'm Valentino, a BI Developer and passionate web developer based in Italy. I love building open source projects, experimenting with new technologies, and sharing knowledge with the community.
+You can preview the production build with `npm run preview`.
 
-- 💼 [LinkedIn](https://www.linkedin.com/in/valentino-mettifogo/)
-- 🧑‍💻 [GitHub](https://github.com/valentinomettifogo)
-
----
-
-> This repository is my main GitHub page: discover my work, the technologies I use, and how to get in touch!
->
-> Setup and deployment notes live in [`docs/`](docs/).
+> To deploy your app, you may need to install an [adapter](https://svelte.dev/docs/kit/adapters) for your target environment.

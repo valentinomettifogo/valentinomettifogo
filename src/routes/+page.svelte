@@ -1,30 +1,19 @@
 <script lang="ts">
-	import Footer from '$lib/components/site/Footer.svelte';
-	import Header from '$lib/components/site/Header.svelte';
-	import PostEntry from '$lib/components/site/PostEntry.svelte';
-	import Shell from '$lib/components/site/Shell.svelte';
-	import Subhead from '$lib/components/site/Subhead.svelte';
-	import { lastUpdated, posts } from '$lib/data/posts';
-	import { site } from '$lib/data/site';
+	import type { PageData } from './$types';
+	import PageHeader from '$lib/components/PageHeader.svelte';
+	import PostList from '$lib/components/PostList.svelte';
+
+	let { data }: { data: PageData } = $props();
 </script>
 
 <svelte:head>
-	<title>{site.title}</title>
-	<meta name="description" content={site.description} />
-	<meta property="og:title" content={site.title} />
-	<meta property="og:description" content={site.description} />
-	<meta property="og:type" content="website" />
+	<title>Side Quest</title>
+	<meta name="description" content="Personal feed of small projects and experiments." />
 </svelte:head>
 
-<Shell>
-	<Header />
-	<Subhead />
-
-	<div>
-		{#each posts as post (post.id)}
-			<PostEntry {post} />
-		{/each}
-	</div>
-
-	<Footer updated={lastUpdated} />
-</Shell>
+<main class="mx-auto max-w-4xl px-6 py-16 sm:py-24 md:grid md:grid-cols-[16rem_1fr] md:gap-12">
+	<aside class="md:sticky md:top-16 md:self-start">
+		<PageHeader />
+	</aside>
+	<PostList posts={data.posts} />
+</main>

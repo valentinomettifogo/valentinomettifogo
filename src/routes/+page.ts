@@ -1,3 +1,9 @@
-// The homepage reads neither cookies nor session, so it can become a static file
-// served from the CDN. That is why all auth loading lives inside (protected).
-export const prerender = true;
+import type { PageLoad } from './$types';
+import type { Post } from '$lib/types';
+import posts from '$lib/data/posts.json';
+
+export const load: PageLoad = () => {
+	const sorted: Post[] = [...(posts as Post[])].sort((a, b) => b.date.localeCompare(a.date));
+
+	return { posts: sorted };
+};
