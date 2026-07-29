@@ -1,5 +1,14 @@
 <script lang="ts">
-	let { user }: { user: { id: string; email: string | null } | null } = $props();
+	import type { Role } from '$lib/types';
+
+	let {
+		user,
+		role
+	}: { user: { id: string; email: string | null } | null; role: Role | null } = $props();
+
+	// Cosmetic only: /portal enforces the same rule server-side in its load and in
+	// every action. Hiding the link just avoids sending people to a 403.
+	const canSeePortal = $derived(role === 'analytics' || role === 'admin');
 </script>
 
 <header class="border-b border-neutral-200">
@@ -8,12 +17,14 @@
 
 		<div class="flex items-center gap-3 text-sm">
 			{#if user}
-				<a
-					href="/portal"
-					class="inline-flex items-center rounded-md border border-neutral-300 px-3 py-1.5 font-medium text-neutral-700 hover:bg-neutral-50"
-				>
-					Portal
-				</a>
+				{#if canSeePortal}
+					<a
+						href="/portal"
+						class="inline-flex items-center rounded-md border border-neutral-300 px-3 py-1.5 font-medium text-neutral-700 hover:bg-neutral-50"
+					>
+						Portal
+					</a>
+				{/if}
 				<form method="POST" action="/auth/logout">
 					<button
 						type="submit"

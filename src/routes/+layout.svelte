@@ -8,5 +8,5 @@
 </script>
 
 <svelte:head><link rel="icon" href={favicon} /></svelte:head>
-<Navbar user={data.user} />
+<Navbar user={data.user} role={data.role} />
 {@render children()}
