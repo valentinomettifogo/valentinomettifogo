@@ -1,10 +1,42 @@
 [
 	{
-		"id": "wip",
-		"date": "2026-07-29",
-		"title": "Work in progress",
-		"body": "Hi guys! This project is still work in progress. I promes something will shows up soon! Stay tuned!",
+		"id": "whos-it",
+		"date": "2026-07-28",
+		"title": "Who's it?",
+		"body": "Okay... I created this only because I need to choose who start first and Chwazi is not avaible on iphone... I took me 15 minutes to create and put everything online (both code and publish) so have mercy 😵",
+		"link": "https://whosit.valentinomettifogo.com",
+		"linkLabel": "Choose who starts first"
+	},
+	{
+		"id": "budget-tracker",
+		"date": "2026-03-02",
+		"title": "My Costs Tracker is finally online!",
+		"body": "So... I wanted to keep an eye of what I spended and how, so I decided to build this. I'm not an expert but I decided to go with Svelte 5 for the fronted and supabase as a backend. If you want to give it a try go for it and let me know what do you think",
+		"link": "https://budget.valentinomettifogo.com",
+		"linkLabel": "How much do you spend?"
+	},
+	{
+		"id": "blackjack",
+		"date": "2025-09-24",
+		"title": "Luca'2 Blackjack",
+		"body": "Today is my bestman birthday and I decide to make him going craizy with a simple game. it's a BlackJack but with a couple of cards more (my friends)! If you win 5 match in a raw you will be rewarded",
+		"link": "https://buoncompleannoluca.vercel.app",
+		"linkLabel": "Let's play a game"
+	},
+	{
+		"id": "linkedin",
+		"date": "2025-09-06",
+		"title": "Hey! I update my LinkedIn",
+		"body": "I'm officially a Team Leader now! Feel free to add me, I don't have many connections yet but I'm working on it!",
+		"link": "https://www.linkedin.com/in/valentino-mettifogo",
+		"linkLabel": "Check my profile"
+	},
+	{
+		"id": "github",
+		"date": "2025-01-23",
+		"title": "Here's my GitHub",
+		"body": "Okay I'm not a coder but I like it. Mostly Go, more skeletons than finished projects. Minimalist development, one piece at a time.",
 		"link": "https://github.com/valentinomettifogo",
-		"linkLabel": "this is my github"
+		"linkLabel": "Open profile"
 	}
 ]

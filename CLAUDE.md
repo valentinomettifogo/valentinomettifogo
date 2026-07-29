@@ -15,13 +15,6 @@ Vercel, with Supabase for auth and data. Three parts:
    `admin` also edits it.
 4. **`/admin` panel** — the user list, where an admin assigns roles.
 
-A Telegram webhook is planned but not built. The extension point is the `Notifier`
-interface in `src/lib/server/notify/`.
-
-[`BACKUP/`](BACKUP/) holds an earlier, more elaborate version of the same app. It is
-reference material, not built and not deployed — but when a feature already exists there,
-port it rather than reinventing it.
-
 ## Commands
 
 ```bash
