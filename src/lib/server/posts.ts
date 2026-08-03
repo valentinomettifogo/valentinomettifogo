@@ -1,7 +1,8 @@
 import type { Post, PostRow, PostStatus } from '$lib/types';
 import { getServiceClient } from './supabase';
 import { marked } from 'marked';
-import sanitizeHtml from 'sanitize-html';
+import xss from 'xss';
+import type { IFilterXSSOptions } from 'xss';
 
 const PUBLIC_COLUMNS = 'slug, title, body_md, published_at';
 const ROW_COLUMNS = 'id, slug, title, body_md, status, author_id, updated_at';
@@ -18,15 +19,43 @@ type DbRow = {
 };
 
 /**
- * sanitize-html rather than a jsdom-based sanitizer: jsdom's optional native
- * deps (canvas, bufferutil, ...) aren't traceable by Vercel's serverless
- * bundler and crash the function at runtime the first time it renders a post.
- * sanitize-html is pure JS, so it has nothing for the bundler to miss.
+ * `xss` rather than a jsdom- or htmlparser2-based sanitizer: both pull in an
+ * ESM-only transitive dependency that Vercel's serverless Node runtime can't
+ * `require()` (ERR_REQUIRE_ESM), crashing the function at runtime even though
+ * it builds fine locally. `xss` has no such dependency.
+ *
+ * Explicit allowlist -- the tags marked can actually produce from a post's
+ * markdown -- rather than the library's own default list, which also would
+ * need extending for `img` (not included by default).
  */
-const SANITIZE_OPTIONS: sanitizeHtml.IOptions = {
-	allowedTags: [...sanitizeHtml.defaults.allowedTags, 'img'],
-	allowedAttributes: {
-		...sanitizeHtml.defaults.allowedAttributes,
+const SANITIZE_OPTIONS: IFilterXSSOptions = {
+	whiteList: {
+		p: [],
+		br: [],
+		hr: [],
+		h1: [],
+		h2: [],
+		h3: [],
+		h4: [],
+		h5: [],
+		h6: [],
+		strong: [],
+		b: [],
+		em: [],
+		i: [],
+		u: [],
+		s: [],
+		del: [],
+		ins: [],
+		mark: [],
+		small: [],
+		blockquote: ['cite'],
+		code: [],
+		pre: [],
+		ul: [],
+		ol: [],
+		li: [],
+		a: ['href', 'title', 'target'],
 		img: ['src', 'alt', 'title']
 	}
 };
@@ -37,7 +66,7 @@ const SANITIZE_OPTIONS: sanitizeHtml.IOptions = {
  * evolve without needing to re-save every existing post.
  */
 function renderHtml(bodyMd: string): string {
-	return sanitizeHtml(marked.parse(bodyMd, { async: false }) as string, SANITIZE_OPTIONS);
+	return xss(marked.parse(bodyMd, { async: false }) as string, SANITIZE_OPTIONS);
 }
 
 /** Turns a title into a URL-safe slug. Collisions are handled by `uniqueSlug`. */
