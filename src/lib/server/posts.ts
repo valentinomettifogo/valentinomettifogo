@@ -1,7 +1,7 @@
 import type { Post, PostRow, PostStatus } from '$lib/types';
 import { getServiceClient } from './supabase';
 import { marked } from 'marked';
-import DOMPurify from 'isomorphic-dompurify';
+import sanitizeHtml from 'sanitize-html';
 
 const PUBLIC_COLUMNS = 'slug, title, body_md, published_at';
 const ROW_COLUMNS = 'id, slug, title, body_md, status, author_id, updated_at';
@@ -18,12 +18,26 @@ type DbRow = {
 };
 
 /**
+ * sanitize-html rather than a jsdom-based sanitizer: jsdom's optional native
+ * deps (canvas, bufferutil, ...) aren't traceable by Vercel's serverless
+ * bundler and crash the function at runtime the first time it renders a post.
+ * sanitize-html is pure JS, so it has nothing for the bundler to miss.
+ */
+const SANITIZE_OPTIONS: sanitizeHtml.IOptions = {
+	allowedTags: [...sanitizeHtml.defaults.allowedTags, 'img'],
+	allowedAttributes: {
+		...sanitizeHtml.defaults.allowedAttributes,
+		img: ['src', 'alt', 'title']
+	}
+};
+
+/**
  * Body markdown is trusted as written by the author at save time, but
  * rendered HTML is sanitized here, at read time -- so sanitization rules can
  * evolve without needing to re-save every existing post.
  */
 function renderHtml(bodyMd: string): string {
-	return DOMPurify.sanitize(marked.parse(bodyMd, { async: false }) as string);
+	return sanitizeHtml(marked.parse(bodyMd, { async: false }) as string, SANITIZE_OPTIONS);
 }
 
 /** Turns a title into a URL-safe slug. Collisions are handled by `uniqueSlug`. */
