@@ -11,6 +11,7 @@
 	// every action. Hiding a link just avoids sending people to a 403.
 	const canSeePortal = $derived(role === 'analytics' || role === 'admin');
 	const canSeeAdmin = $derived(role === 'admin');
+	const canSeeWrite = $derived(role === 'author' || role === 'admin');
 
 	const activePage = 'rounded bg-accent-green px-2 py-1 font-medium text-paper';
 	const inactivePage =
@@ -35,6 +36,9 @@
 >
 	<a href="/" class={pageLink('/')}>Home</a>
 	{#if user}
+		{#if canSeeWrite}
+			<a href="/write" class={pageLink('/write')}>Write</a>
+		{/if}
 		{#if canSeePortal}
 			<a href="/portal" class={pageLink('/portal')}>Portal</a>
 		{/if}

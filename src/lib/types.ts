@@ -6,10 +6,10 @@ export interface Post {
 	html: string;
 }
 
-export type Role = 'user' | 'analytics' | 'admin';
+export type Role = 'user' | 'analytics' | 'admin' | 'author';
 
-/** The three roles in assignment order, for rendering pickers. */
-export const ROLES: readonly Role[] = ['user', 'analytics', 'admin'];
+/** The roles in assignment order, for rendering pickers. */
+export const ROLES: readonly Role[] = ['user', 'author', 'analytics', 'admin'];
 
 /** A row of `public.users` as shown in the /admin table. */
 export interface UserView {
@@ -39,6 +39,24 @@ export interface TenantView {
 	hasApiKey: boolean;
 	/** `••••1234`, like `mascheraChiave()` in the old Apps Script. */
 	apiKeyMasked: string;
+}
+
+export type PostStatus = 'draft' | 'published';
+
+/**
+ * A `public.posts` row shaped for the /write dashboard. There is no secret
+ * field to strip here (unlike `TenantView`/`api_key`) -- `bodyMd` is safe to
+ * send back because only the author who wrote it, or an admin, ever sees it.
+ */
+export interface PostRow {
+	id: string;
+	slug: string;
+	title: string;
+	bodyMd: string;
+	status: PostStatus;
+	updatedAt: string;
+	authorEmail: string | null;
+	isOwn: boolean;
 }
 
 /**

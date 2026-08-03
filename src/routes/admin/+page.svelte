@@ -28,10 +28,14 @@
 		sign-in, with the <code class="font-mono text-xs">user</code> role.
 	</p>
 
-	<dl class="mt-6 grid gap-2 text-sm sm:grid-cols-3">
+	<dl class="mt-6 grid gap-2 text-sm sm:grid-cols-2 lg:grid-cols-4">
 		<div class="rounded-md border border-neutral-200 p-3">
 			<dt class="font-medium text-neutral-900">user</dt>
 			<dd class="mt-1 text-neutral-600">The public site only.</dd>
+		</div>
+		<div class="rounded-md border border-neutral-200 p-3">
+			<dt class="font-medium text-neutral-900">author</dt>
+			<dd class="mt-1 text-neutral-600">Also writes and publishes posts from /write.</dd>
 		</div>
 		<div class="rounded-md border border-neutral-200 p-3">
 			<dt class="font-medium text-neutral-900">analytics</dt>
@@ -39,7 +43,7 @@
 		</div>
 		<div class="rounded-md border border-neutral-200 p-3">
 			<dt class="font-medium text-neutral-900">admin</dt>
-			<dd class="mt-1 text-neutral-600">Also edits tenants and this page.</dd>
+			<dd class="mt-1 text-neutral-600">Also edits tenants, this page, and everyone's posts.</dd>
 		</div>
 	</dl>
 
