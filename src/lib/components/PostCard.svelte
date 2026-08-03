@@ -6,18 +6,20 @@
 
 <article class="group">
 	<span
-		class="inline-flex items-center gap-2 text-xs font-medium uppercase tracking-wide text-neutral-500"
+		class="inline-flex items-center gap-2 text-xs font-medium uppercase tracking-wide text-ink-muted"
 	>
-		<span class="h-1.5 w-1.5 rounded-full bg-red-500"></span>
+		<span class="h-1.5 w-1.5 rounded-full bg-accent-red"></span>
 		{post.date}
 	</span>
 
-	<h2 class="mt-2 text-xl font-semibold text-neutral-900 group-hover:text-teal-700">
+	<h2
+		class="mt-2 font-display text-4xl font-bold tracking-tight text-ink underline decoration-accent-green decoration-4 underline-offset-4 sm:text-5xl"
+	>
 		{post.title}
 	</h2>
 
 	<div
-		class="prose prose-neutral mt-2 max-w-none prose-headings:text-neutral-900 prose-p:text-neutral-600 prose-a:text-teal-600 prose-a:no-underline hover:prose-a:underline prose-strong:text-neutral-900"
+		class="prose prose-neutral mt-3 max-w-none prose-headings:font-display prose-headings:text-ink prose-p:text-ink prose-a:text-accent-green prose-a:no-underline hover:prose-a:underline prose-strong:text-ink"
 	>
 		{@html post.html}
 	</div>

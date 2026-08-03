@@ -6,11 +6,11 @@
 </script>
 
 {#if posts.length === 0}
-	<p class="py-8 text-neutral-500">No posts yet.</p>
+	<p class="py-8 text-ink-muted">No posts yet.</p>
 {:else}
-	<ul class="divide-y divide-neutral-200">
+	<ul class="divide-y divide-line">
 		{#each posts as post (post.id)}
-			<li class="py-8">
+			<li class="py-10 first:pt-0">
 				<PostCard {post} />
 			</li>
 		{/each}

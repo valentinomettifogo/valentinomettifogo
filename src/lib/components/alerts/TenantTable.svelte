@@ -69,7 +69,6 @@
 					<th class="px-4 py-2.5 font-medium">Client</th>
 					<th class="px-3 py-2.5 font-medium">Host</th>
 					<th class="px-3 py-2.5 font-medium">Key</th>
-					<th class="px-3 py-2.5 font-medium">Status</th>
 					<th class="px-4 py-2.5"></th>
 				</tr>
 			</thead>
@@ -87,10 +86,9 @@
 
 						<td class="px-3 py-3 font-mono text-xs text-neutral-600">{tenant.host}</td>
 						<td class="px-3 py-3 font-mono text-xs text-neutral-600">{tenant.apiKeyMasked}</td>
-						<td class="px-3 py-3"><KeyStatus check={check(tenant.id)} /></td>
 
 						<td class="px-4 py-3">
-							<div class="flex justify-end gap-2">
+							<div class="flex items-center justify-end gap-2">
 								<button
 									type="button"
 									onclick={() => verify(tenant)}
@@ -109,4 +107,19 @@
 			</tbody>
 		</table>
 	</div>
+
+	{#if Object.keys(checks).length > 0}
+		<!-- Fixed-width panel, not a table column: a long check message here just
+		     wraps in place instead of pushing the table's columns around. -->
+		<div class="mt-3 space-y-1.5 rounded-md border border-neutral-200 bg-neutral-50 px-4 py-3">
+			{#each tenants as tenant (tenant.id)}
+				{#if checks[tenant.id]}
+					<div class="flex flex-wrap items-baseline gap-x-2">
+						<span class="text-xs font-medium text-neutral-700">{tenant.client}</span>
+						<KeyStatus check={checks[tenant.id]} />
+					</div>
+				{/if}
+			{/each}
+		</div>
+	{/if}
 {/if}

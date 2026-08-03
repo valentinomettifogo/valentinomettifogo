@@ -1,2 +1,14 @@
 @import 'tailwindcss';
 @plugin '@tailwindcss/typography';
+
+@theme {
+	--font-display: 'Be Vietnam Pro', ui-sans-serif, system-ui, sans-serif;
+
+	/* Neutral light-gray background, matching the editorial reference. */
+	--color-paper: #f8f9fa;
+	--color-ink: #131412;
+	--color-ink-muted: #6b6b68;
+	--color-line: #cfcfcd;
+	--color-accent-green: #2d5c43;
+	--color-accent-red: #ad3b2c;
+}
