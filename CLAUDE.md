@@ -97,9 +97,6 @@ Two deliberate exceptions, both because they are contracts already configured el
 - **`verbatimModuleSyntax` is on.** Type-only imports must use `import type`.
 - **No `svelte.config.js`.** Kit config is passed inline to `sveltekit({...})` in
   `vite.config.ts`. Anything that would go under `kit: {}` goes flat in there.
-- **`src/lib/posts.ts` and `src/lib/posts/*.md` are dead code.** Leftover from before posts
-  moved to `public.posts` (see `docs/supabase/20260804000002_seed_existing_posts.sql`), not
-  yet deleted. Don't add posts as `.md` files — use `/write`.
 
 ## Where to add things
 
