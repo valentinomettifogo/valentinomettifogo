@@ -5,15 +5,19 @@ Guidance for Claude Code when working in this repository.
 ## What this is
 
 Personal site and webhook hub. SvelteKit 2 + Svelte 5 (runes) + Tailwind v4, deployed on
-Vercel, with Supabase for auth and data. Three parts:
+Vercel, with Supabase for auth and data. See [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md)
+for the full picture; the short version, five parts:
 
-1. **Public mini-blog** at `/` — posts are Markdown files in the repo.
-2. **Qlik Cloud webhook** at `/api/webhooks/qlik` — receives reload events from several
+1. **Public mini-blog** at `/` — posts live in `public.posts`, rendered from Markdown
+   (`marked`) and sanitized (`xss`) at read time. Written and published from `/write`.
+2. **`/write` panel** — author dashboard behind Google sign-in: an `author` manages their
+   own drafts/published posts, an `admin` moderates everyone's.
+3. **Qlik Cloud webhook** at `/api/webhooks/qlik` — receives reload events from several
    Qlik tenants, filters the failures, resolves app and space names through the tenant's
    REST API, and sends an alert to Google Chat. It is a port of a Google Apps Script.
-3. **`/portal` panel** — Qlik tenant list behind Google sign-in: `analytics` reads it,
+4. **`/portal` panel** — Qlik tenant list behind Google sign-in: `analytics` reads it,
    `admin` also edits it.
-4. **`/admin` panel** — the user list, where an admin assigns roles.
+5. **`/admin` panel** — the user list, where an admin assigns roles.
 
 ## Commands
 
@@ -27,19 +31,23 @@ npm run build
 
 ## Auth and roles
 
-`public.users` has one row per `auth.users` row with a `role` of `user`, `analytics` or
-`admin`, provisioned by a security-definer trigger (see [`docs/supabase/`](docs/supabase/)).
-[`src/hooks.server.ts`](src/hooks.server.ts) resolves it once per request into
-`locals.role`; `roleMeets()` in [`src/lib/server/authz.ts`](src/lib/server/authz.ts) ranks
-it `user < analytics < admin`. There is no `(protected)` route group — each page guards
-itself in its own `+page.server.ts`, and so does every form action.
+`public.users` has one row per `auth.users` row with a `role` of `user`, `author`,
+`analytics` or `admin`, provisioned by a security-definer trigger (see
+[`docs/supabase/`](docs/supabase/)). [`src/hooks.server.ts`](src/hooks.server.ts) resolves
+it once per request into `locals.role`; `roleMeets()` in
+[`src/lib/server/authz.ts`](src/lib/server/authz.ts) ranks it `user/author < analytics <
+admin` for `/portal`/`/admin`. `/write` is a separate axis, not another step on that
+ladder — `canWritePosts()`/`canModerateAllPosts()` in the same file — so `author` grants no
+`/portal` access. There is no `(protected)` route group — each page guards itself in its
+own `+page.server.ts`, and so does every form action.
 
-| | `user` | `analytics` | `admin` |
-|---|---|---|---|
-| `/` | ✓ | ✓ | ✓ |
-| `/portal` read | | ✓ | ✓ |
-| `/portal` write | | | ✓ |
-| `/admin` | | | ✓ |
+| | `user` | `author` | `analytics` | `admin` |
+|---|---|---|---|---|
+| `/` | ✓ | ✓ | ✓ | ✓ |
+| `/write` (own posts) | | ✓ | | ✓ (everyone's) |
+| `/portal` read | | | ✓ | ✓ |
+| `/portal` write | | | | ✓ |
+| `/admin` | | | | ✓ |
 
 Roles are changed only from `/admin`, and **an admin cannot change their own role**: the
 last admin demoting themselves would leave no way back except the Supabase table editor.
@@ -89,12 +97,15 @@ Two deliberate exceptions, both because they are contracts already configured el
 - **`verbatimModuleSyntax` is on.** Type-only imports must use `import type`.
 - **No `svelte.config.js`.** Kit config is passed inline to `sveltekit({...})` in
   `vite.config.ts`. Anything that would go under `kit: {}` goes flat in there.
+- **`src/lib/posts.ts` and `src/lib/posts/*.md` are dead code.** Leftover from before posts
+  moved to `public.posts` (see `docs/supabase/20260804000002_seed_existing_posts.sql`), not
+  yet deleted. Don't add posts as `.md` files — use `/write`.
 
 ## Where to add things
 
 | Task | Where |
 |---|---|
-| A blog post | `src/lib/posts/*.md` — one file per post, `date`/`title` frontmatter + a markdown body; images go in `static/posts/<slug>/` |
+| A blog post | Write it from `/write` (stored in `public.posts`, see `src/lib/server/posts.ts`) — not a `.md` file |
 | A notification channel | Implement `Notifier` in `src/lib/server/notify/`, add a branch to `notifierFor()` |
 | A protected page | New route + a role check in its `+page.server.ts`, like `src/routes/portal/` |
 | A generic example (client, host) | Use `Acme` / `tenant.eu.qlikcloud.com` — never a real customer name |
@@ -106,12 +117,11 @@ Two deliberate exceptions, both because they are contracts already configured el
 src/
 ├── lib/
 │   ├── components/        # Navbar, PostList…, plus alerts/ for the tenant panel
-│   ├── posts/*.md         # blog post content (frontmatter + markdown body)
-│   ├── posts.ts           # parses posts/*.md into Post
-│   ├── server/            # server-only: qlik, tenants, notify, crypto, supabase, authz
+│   ├── server/            # server-only: qlik, tenants, notify, crypto, supabase, authz, posts, users
 │   └── types.ts           # types shared between server and client
 └── routes/
-    ├── +page.svelte       # public blog
+    ├── +page.svelte       # public blog (reads public.posts)
+    ├── write/              # author dashboard (own posts: author, all posts: admin)
     ├── portal/            # Qlik tenant panel (read: analytics, write: admin)
     ├── admin/             # user list and role assignment (admin)
     ├── auth/              # login, callback, logout
