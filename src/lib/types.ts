@@ -4,6 +4,8 @@ export interface Post {
 	title: string;
 	/** Markdown body, already rendered to HTML — render with `{@html}`. */
 	html: string;
+	/** Plain-text summary, truncated — used for `<meta description>` and OG/Twitter tags. */
+	excerpt: string;
 }
 
 export type Role = 'user' | 'analytics' | 'admin' | 'author';

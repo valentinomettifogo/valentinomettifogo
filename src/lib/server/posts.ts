@@ -69,6 +69,24 @@ function renderHtml(bodyMd: string): string {
 	return xss(marked.parse(bodyMd, { async: false }) as string, SANITIZE_OPTIONS);
 }
 
+const EXCERPT_LENGTH = 160;
+
+/** Plain-text summary of rendered HTML, truncated at a word boundary — for meta/OG tags. */
+function toExcerpt(html: string, maxLength: number = EXCERPT_LENGTH): string {
+	const text = html
+		.replace(/<[^>]+>/g, ' ')
+		.replace(/&amp;/g, '&')
+		.replace(/&lt;/g, '<')
+		.replace(/&gt;/g, '>')
+		.replace(/&quot;/g, '"')
+		.replace(/&#39;/g, "'")
+		.replace(/\s+/g, ' ')
+		.trim();
+
+	if (text.length <= maxLength) return text;
+	return text.slice(0, maxLength).replace(/\s+\S*$/, '') + '…';
+}
+
 /** Turns a title into a URL-safe slug. Collisions are handled by `uniqueSlug`. */
 function toSlug(title: string): string {
 	const slug = title
@@ -102,12 +120,38 @@ export async function listPublishedPosts(): Promise<Post[]> {
 
 	if (error) throw new Error(`Reading posts failed: ${error.message}`);
 
-	return (data ?? []).map((row) => ({
-		id: row.slug,
-		date: (row.published_at ?? '').slice(0, 10),
-		title: row.title,
-		html: renderHtml(row.body_md)
-	}));
+	return (data ?? []).map((row) => {
+		const html = renderHtml(row.body_md);
+		return {
+			id: row.slug,
+			date: (row.published_at ?? '').slice(0, 10),
+			title: row.title,
+			html,
+			excerpt: toExcerpt(html)
+		};
+	});
+}
+
+/** A single published post by slug, for its permalink page — or null if missing/unpublished. */
+export async function getPublishedPostBySlug(slug: string): Promise<Post | null> {
+	const { data, error } = await getServiceClient()
+		.from('posts')
+		.select(PUBLIC_COLUMNS)
+		.eq('slug', slug)
+		.eq('status', 'published')
+		.maybeSingle<PublicRow>();
+
+	if (error) throw new Error(`Reading post failed: ${error.message}`);
+	if (!data) return null;
+
+	const html = renderHtml(data.body_md);
+	return {
+		id: data.slug,
+		date: (data.published_at ?? '').slice(0, 10),
+		title: data.title,
+		html,
+		excerpt: toExcerpt(html)
+	};
 }
 
 async function emailsByAuthor(authorIds: string[]): Promise<Map<string, string | null>> {

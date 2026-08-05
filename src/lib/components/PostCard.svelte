@@ -12,10 +12,13 @@
 		{post.date}
 	</span>
 
-	<h2
-		class="mt-2 font-display text-4xl font-bold tracking-tight text-ink underline decoration-accent-green decoration-4 underline-offset-4 sm:text-5xl"
-	>
-		{post.title}
+	<h2 class="mt-2 font-display text-4xl font-bold tracking-tight sm:text-5xl">
+		<a
+			href="/posts/{post.id}"
+			class="text-ink underline decoration-accent-green decoration-4 underline-offset-4"
+		>
+			{post.title}
+		</a>
 	</h2>
 
 	<div
