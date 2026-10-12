@@ -1,6 +1,9 @@
 import { listPublishedPosts } from '$lib/server/posts';
 import type { RequestHandler } from './$types';
 
+/** Cached at Vercel's edge for an hour so crawler hits don't each query Supabase. */
+const CACHE_CONTROL = 'public, max-age=0, s-maxage=3600, stale-while-revalidate=86400';
+
 function toUrlEntry(loc: string, lastmod?: string): string {
 	const lastmodTag = lastmod ? `<lastmod>${lastmod}</lastmod>` : '';
 	return `<url><loc>${loc}</loc>${lastmodTag}</url>`;
@@ -18,6 +21,6 @@ export const GET: RequestHandler = async ({ url }) => {
 	const body = `<?xml version="1.0" encoding="UTF-8"?><urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">${entries.join('')}</urlset>`;
 
 	return new Response(body, {
-		headers: { 'Content-Type': 'application/xml' }
+		headers: { 'Content-Type': 'application/xml', 'Cache-Control': CACHE_CONTROL }
 	});
 };

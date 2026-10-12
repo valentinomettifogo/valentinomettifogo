@@ -1,5 +1,9 @@
-# allow crawling everything by default
+# Public: the blog and its posts. Private panels and endpoints are sign-in only.
 User-agent: *
-Disallow:
+Disallow: /write
+Disallow: /portal
+Disallow: /admin
+Disallow: /auth/
+Disallow: /api/
 
-Sitemap: https://valentinomettifogo.com/sitemap.xml
+Sitemap: https://www.valentinomettifogo.com/sitemap.xml
