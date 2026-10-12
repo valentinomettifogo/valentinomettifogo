@@ -1,4 +1,8 @@
 <script lang="ts">
+	import '@fontsource/be-vietnam-pro/400.css';
+	import '@fontsource/be-vietnam-pro/500.css';
+	import '@fontsource/be-vietnam-pro/600.css';
+	import '@fontsource/be-vietnam-pro/700.css';
 	import './layout.css';
 	import favicon from '$lib/assets/favicon.svg';
 	import Sidebar from '$lib/components/Sidebar.svelte';

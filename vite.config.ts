@@ -31,8 +31,9 @@ export default defineConfig({
 					'script-src': ['self', 'https://va.vercel-scripts.com'],
 					// 'unsafe-inline' because Vite injects component styles as inline <style>
 					// tags in dev — a nonce/hash only covers what's in the SSR'd HTML.
-					'style-src': ['self', 'unsafe-inline', 'https://fonts.googleapis.com'],
-					'font-src': ['self', 'https://fonts.gstatic.com'],
+					'style-src': ['self', 'unsafe-inline'],
+					// Fonts are self-hosted (@fontsource) so no visitor IP reaches Google.
+					'font-src': ['self'],
 					// https: (not a fixed allowlist) because published posts can embed
 					// author-authored <img src> from any host -- see SANITIZE_OPTIONS in posts.ts.
 					'img-src': ['self', 'data:', 'https:'],
