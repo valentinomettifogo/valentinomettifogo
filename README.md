@@ -1,6 +1,6 @@
 # Valentino Mettifogo
 
-![Profile Banner](https://valentinomettifogo.com/assets/img/valmet-banner.png)
+![Profile Banner](https://www.valentinomettifogo.com/assets/img/valmet-banner.png)
 
 [![GitHub](https://img.shields.io/badge/GitHub-valentinomettifogo-24292f?logo=github)](https://github.com/valentinomettifogo)
 [![LinkedIn](https://img.shields.io/badge/LinkedIn-valentino--mettifogo-0A66C2?logo=linkedin)](https://www.linkedin.com/in/valentino-mettifogo/)

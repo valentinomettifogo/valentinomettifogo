@@ -107,7 +107,7 @@ Two deliberate exceptions, both because they are contracts already configured el
 | A protected page | New route + a role check in its `+page.server.ts`, like `src/routes/portal/` |
 | A generic example (client, host) | Use `Acme` / `tenant.eu.qlikcloud.com` — never a real customer name |
 | A schema change | A new timestamped file in `docs/supabase/`, idempotent and re-runnable |
-| A shared static asset (used by other projects) | `static/assets/`, served at `https://valentinomettifogo.com/assets/…` with CORS and a 7-day cache (`vercel.json`). Treat URLs as permanent: never rename or overwrite, add a new file (`banner-v2.png`) instead. Small, stable files only — anything large or uploaded often belongs in Supabase Storage |
+| A shared static asset (used by other projects) | `static/assets/`, served at `https://www.valentinomettifogo.com/assets/…` with CORS and a 7-day cache (`vercel.json`). Treat URLs as permanent: never rename or overwrite, add a new file (`banner-v2.png`) instead. Small, stable files only — anything large or uploaded often belongs in Supabase Storage |
 
 ## Layout
 
