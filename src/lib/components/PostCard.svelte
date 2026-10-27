@@ -26,4 +26,13 @@
 	>
 		{@html post.html}
 	</div>
+
+	{#if post.truncated}
+		<a
+			href="/posts/{post.id}"
+			class="mt-4 inline-block text-sm font-medium text-accent-green hover:underline"
+		>
+			Read more &rarr;
+		</a>
+	{/if}
 </article>

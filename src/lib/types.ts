@@ -6,6 +6,8 @@ export interface Post {
 	html: string;
 	/** Plain-text summary, truncated — used for `<meta description>` and OG/Twitter tags. */
 	excerpt: string;
+	/** True when `html` is only the leading part of the post (homepage preview). */
+	truncated: boolean;
 }
 
 export type Role = 'user' | 'analytics' | 'admin' | 'author';

@@ -70,6 +70,38 @@ function renderHtml(bodyMd: string): string {
 }
 
 const EXCERPT_LENGTH = 160;
+const PREVIEW_LENGTH = 600;
+const MORE_MARKER = /^<!--\s*more\s*-->\s*$/i;
+
+/**
+ * Leading part of a post's markdown, for the homepage. Cuts at a
+ * `<!-- more -->` line if the author put one, otherwise at the first block
+ * boundary past PREVIEW_LENGTH characters -- never mid-paragraph or mid-list,
+ * so the rendered HTML stays well-formed. Link reference definitions are kept
+ * so `[text][ref]` links in the preview still resolve.
+ */
+function toPreviewMd(bodyMd: string): { md: string; truncated: boolean } {
+	const tokens = marked.lexer(bodyMd);
+	const defs = tokens.filter((t) => t.type === 'def').map((t) => t.raw);
+
+	let length = 0;
+	for (let i = 0; i < tokens.length; i++) {
+		const token = tokens[i];
+		const cutHere =
+			(token.type === 'html' && MORE_MARKER.test(token.raw.trim())) ||
+			(length >= PREVIEW_LENGTH && token.type !== 'space' && token.type !== 'def');
+		if (cutHere) {
+			const kept = tokens.slice(0, i).map((t) => t.raw);
+			// Cut at the marker: only "truncated" if real content follows it.
+			const truncated =
+				token.type !== 'html' ||
+				tokens.slice(i + 1).some((t) => t.type !== 'space' && t.type !== 'def');
+			return { md: [...kept, '\n\n', ...defs].join(''), truncated };
+		}
+		if (token.type !== 'def') length += token.raw.trim().length;
+	}
+	return { md: bodyMd, truncated: false };
+}
 
 /** Plain-text summary of rendered HTML, truncated at a word boundary — for meta/OG tags. */
 function toExcerpt(html: string, maxLength: number = EXCERPT_LENGTH): string {
@@ -109,7 +141,11 @@ async function uniqueSlug(base: string): Promise<string> {
 	}
 }
 
-/** Published posts for the public homepage, newest first, rendered and sanitized. */
+/**
+ * Published posts for the public homepage, newest first, rendered and
+ * sanitized. `html` is only the preview (see `toPreviewMd`); the full body is
+ * on the permalink page.
+ */
 export async function listPublishedPosts(): Promise<Post[]> {
 	const { data, error } = await getServiceClient()
 		.from('posts')
@@ -121,13 +157,15 @@ export async function listPublishedPosts(): Promise<Post[]> {
 	if (error) throw new Error(`Reading posts failed: ${error.message}`);
 
 	return (data ?? []).map((row) => {
-		const html = renderHtml(row.body_md);
+		const preview = toPreviewMd(row.body_md);
+		const html = renderHtml(preview.md);
 		return {
 			id: row.slug,
 			date: (row.published_at ?? '').slice(0, 10),
 			title: row.title,
 			html,
-			excerpt: toExcerpt(html)
+			excerpt: toExcerpt(html),
+			truncated: preview.truncated
 		};
 	});
 }
@@ -150,7 +188,8 @@ export async function getPublishedPostBySlug(slug: string): Promise<Post | null>
 		date: (data.published_at ?? '').slice(0, 10),
 		title: data.title,
 		html,
-		excerpt: toExcerpt(html)
+		excerpt: toExcerpt(html),
+		truncated: false
 	};
 }
 
